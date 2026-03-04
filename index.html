@@ -232,7 +232,7 @@
 <script>
     async function loadFeed() {
         try {
-            const response = await fetch('http://localhost:8001/feed');
+            const response = await fetch('https://mockgram-api.onrender.com/feed');
             const posts = await response.json();
             const container = document.getElementById('feed-container');
             
