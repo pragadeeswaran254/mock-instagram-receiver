@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Instagram UI</title>
+    <style>
+        /* Base App Styles */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #e9ecef; 
+            margin: 0; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Mobile Phone Frame */
+        .phone-frame {
+            width: 100%;
+            max-width: 400px;
+            height: 850px;
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 8px solid #333;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #efefef;
+            background: white;
+            z-index: 10;
+        }
+        .logo-text {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 26px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .top-icons span {
+            font-size: 22px;
+            margin-left: 15px;
+            cursor: pointer;
+        }
+
+        /* Scrollable Content Area */
+        .app-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            background-color: white;
+        }
+        /* Hide scrollbar for a clean app look */
+        .app-content::-webkit-scrollbar { display: none; }
+
+        /* Stories Section */
+        .stories-container {
+            display: flex;
+            padding: 15px 10px;
+            overflow-x: auto;
+            border-bottom: 1px solid #efefef;
+            gap: 15px;
+        }
+        .stories-container::-webkit-scrollbar { display: none; }
+        .story {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 70px;
+            flex-shrink: 0;
+        }
+        .story-ring {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .story-inner {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            border: 2px solid white;
+            background-color: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            overflow: hidden;
+        }
+        .story-inner img { width: 100%; height: 100%; object-fit: cover; }
+        .story-username {
+            font-size: 11px;
+            color: #262626;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Post Styles */
+        .post { border-bottom: 1px solid #efefef; padding-bottom: 10px; margin-bottom: 10px; }
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+        }
+        .post-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #8e44ad, #3498db);
+            margin-right: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 14px;
+        }
+        .post-user-info { display: flex; flex-direction: column; }
+        .post-username { font-size: 13px; font-weight: 600; color: #262626; }
+        .post-location { font-size: 11px; color: #8e8e8e; }
+        .post-options { margin-left: auto; font-weight: bold; color: #262626; cursor: pointer; }
+
+        .post-image { width: 100%; max-height: 400px; object-fit: cover; background-color: #fafafa; display: block; }
+
+        .post-actions {
+            padding: 12px 15px;
+            display: flex;
+            gap: 15px;
+            font-size: 24px;
+        }
+        .action-icon { cursor: pointer; }
+        .save-icon { margin-left: auto; }
+
+        .post-likes { padding: 0 15px; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #262626;}
+        
+        .post-caption { padding: 0 15px; font-size: 13px; line-height: 1.5; color: #262626; }
+        .post-caption strong { font-weight: 600; margin-right: 5px; }
+        
+        .post-time { padding: 8px 15px; font-size: 10px; color: #8e8e8e; text-transform: uppercase; letter-spacing: 0.5px;}
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 15px;
+            border-top: 1px solid #efefef;
+            background: white;
+            z-index: 10;
+        }
+        .bottom-nav span { font-size: 24px; cursor: pointer; color: #262626; }
+        .nav-profile {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            border: 1px solid #262626;
+        }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: #8e8e8e; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="phone-frame">
+    <div class="top-nav">
+        <h1 class="logo-text">Instagram</h1>
+        <div class="top-icons">
+            <span>🤍</span>
+            <span>💬</span>
+        </div>
+    </div>
+
+    <div class="app-content">
+        
+        <div class="stories-container">
+            <div class="story">
+                <div class="story-ring"><div class="story-inner">📸</div></div>
+                <div class="story-username">Your story</div>
+            </div>
+            <div class="story">
+                <div class="story-ring"><div class="story-inner">🎓</div></div>
+                <div class="story-username">college_hub</div>
+            </div>
+            <div class="story">
+                <div class="story-ring"><div class="story-inner">💻</div></div>
+                <div class="story-username">code_daily</div>
+            </div>
+            <div class="story">
+                <div class="story-ring"><div class="story-inner">🚀</div></div>
+                <div class="story-username">tech_news</div>
+            </div>
+            <div class="story">
+                <div class="story-ring"><div class="story-inner">🎨</div></div>
+                <div class="story-username">ui_designs</div>
+            </div>
+        </div>
+
+        <div id="feed-container">
+            </div>
+
+    </div>
+
+    <div class="bottom-nav">
+        <span>🏠</span>
+        <span>🔍</span>
+        <span>➕</span>
+        <span>🎬</span>
+        <div class="nav-profile">👤</div>
+    </div>
+</div>
+
+<script>
+    async function loadFeed() {
+        try {
+            const response = await fetch('http://localhost:8001/feed');
+            const posts = await response.json();
+            const container = document.getElementById('feed-container');
+            
+            if (posts.length === 0) {
+                container.innerHTML = `<div class="empty-state">No posts scheduled yet.<br>Waiting for AI webhook...</div>`;
+                return;
+            }
+
+            container.innerHTML = posts.map(post => `
+                <div class="post">
+                    <div class="post-header">
+                        <div class="post-avatar">🤖</div>
+                        <div class="post-user-info">
+                            <span class="post-username">ai_automation_bot</span>
+                            <span class="post-location">AI Generator App</span>
+                        </div>
+                        <span class="post-options">⋮</span>
+                    </div>
+                    
+                    <img src="${post.image}" class="post-image" alt="AI Generated">
+                    
+                    <div class="post-actions">
+                        <span class="action-icon">🤍</span>
+                        <span class="action-icon">💬</span>
+                        <span class="action-icon">✈️</span>
+                        <span class="action-icon save-icon">🔖</span>
+                    </div>
+
+                    <div class="post-likes">Liked by college_hub and others</div>
+                    
+                    <div class="post-caption">
+                        <strong>ai_automation_bot</strong> ${post.caption.replace(/\n/g, '<br>')}
+                    </div>
+                    
+                    <div class="post-time">${post.timestamp}</div>
+                </div>
+            `).join('');
+        } catch (err) {
+            console.error(err);
+            document.getElementById('feed-container').innerHTML = `<div class="empty-state">⚠️ Server offline.<br>Start your Mock API python server!</div>`;
+        }
+    }
+
+    // Refresh the feed automatically
+    loadFeed();
+    setInterval(loadFeed, 3000);
+</script>
+
+</body>
+</html>
