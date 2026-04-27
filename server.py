@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse  # <-- Added this import!
 from pydantic import BaseModel
 import uvicorn
 from datetime import datetime
@@ -21,7 +22,12 @@ class IncomingPost(BaseModel):
     image_url: str
     caption: str
 
-# 1. THE WEBHOOK (Where your main app sends the data)
+# 1. THE UI PAGE (This fixes the "Not Found" error on Vercel)
+@app.get("/")
+async def serve_ui():
+    return FileResponse("index.html")
+
+# 2. THE WEBHOOK (Where your main app sends the data)
 @app.post("/webhook")
 def receive_webhook(post: IncomingPost):
     new_post = {
@@ -35,7 +41,7 @@ def receive_webhook(post: IncomingPost):
     print(f"📸 POST RECEIVED: {post.caption[:20]}...")
     return {"status": "success"}
 
-# 2. THE FEED API (Where the HTML page reads the data)
+# 3. THE FEED API (Where the HTML page reads the data)
 @app.get("/feed")
 def get_feed():
     return feed_database
